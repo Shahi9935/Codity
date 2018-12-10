@@ -23,7 +23,7 @@ $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('http://codec
     var temp2 = temp1.search(/\(/i);
     var temp3 = temp1.search(/\)/i);
     var problemSolved = temp1.substring(temp2+1,temp3);
-    $("#codechef-info").append("<div>Problem Solved : "+problemSolved+"</div>");
+    $("#codechef-info").append("<div>Problems Solved : "+problemSolved+"</div>");
     flag = output.search(/<a href="\/ratings\/all"><strong>/i);
     temp1 = output.substring(flag,flag+200);
     temp2 = temp1.search(/g>/i);
@@ -66,11 +66,51 @@ $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('http://codec
 
 $("#spoj-button").on("click",()=>{
   var username = $("#spoj-username").val().trim();
+  $("#spoj-info").html("");
   if(username.length==0){
       alert("Field cannot be empty");
       return;
   }
+  $("#spoj-button").hide();
+  $("#spoj-wait").show();
   $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('http://spoj.com/users/') + username + '&callback=?', function(data){
-      $("#spoj-info").html(data.contents);
+    var output = data.contents;
+    var fake = output.search(/Become a true programming master/i);
+    $("#spoj-wait").hide();
+    $("#spoj-button").show();
+    if(fake > 0){
+      alert("No such username exists");
+      $("#spoj-username").val('');
+      return;
+    }
+    var flag = output.search(/Problems solved/i);
+    var temp1 = output.substring(flag,flag+200);
+    var temp2 = temp1.search(/<dd>/i);
+    var temp3 = temp1.search(/<\/dd>/i);
+    var problemSolved = temp1.substring(temp2+4,temp3);
+    $("#spoj-info").append("<div>Problems Solved : "+problemSolved+"</div>");
+    flag = output.search(/World Rank: /i);
+    temp1 = output.substring(flag,flag+30);
+    temp2 = temp1.search(/#/i);
+    temp3 = temp1.search(/\(/i);
+    var worldRank = temp1.substring(temp2+1,temp3-1);
+    $("#spoj-info").append("<div>World Rank : "+worldRank+"</div>");
+    flag = output.search(/'Submissions'/i);
+    temp1 = output.substring(flag,flag+30);
+    temp2 = temp1.search(/', /i);
+    var temp4 = temp1.substring(temp2+2,temp2+10);
+    temp3 = temp4.search(/,/i);
+    var acceptedSolutions = 0;
+    acceptedSolutions = parseInt(temp4.substring(0,temp3));
+    flag = output.search(/Solutions submitted/i);
+    temp1 = output.substring(flag,flag+200);
+    temp2 = temp1.search(/<dd>/i);
+    temp3 = temp1.search(/<\/dd>/i);
+    totalProblems = parseInt(temp1.substring(temp2+4,temp3));
+    var accuracy = ((acceptedSolutions/totalProblems)*100).toFixed(2);
+    if(totalProblems == 0){
+      accuracy = (0).toFixed(2);
+    }
+    $("#spoj-info").append("<div>Accuracy : "+accuracy+"</div>");
   });
   });
