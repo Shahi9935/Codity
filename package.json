@@ -2,7 +2,7 @@
   "name": "codity",
   "version": "1.0.0",
   "description": "Platform to analyze your COmpetitive Programming.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/Shahi9935/Codity/issues"
   },
-  "homepage": "https://github.com/Shahi9935/Codity#readme"
+  "homepage": "https://github.com/Shahi9935/Codity#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "request-promise": "^4.2.2"
+  }
 }
