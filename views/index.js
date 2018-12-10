@@ -113,4 +113,48 @@ $("#spoj-button").on("click",()=>{
     }
     $("#spoj-info").append("<div>Accuracy : "+accuracy+"</div>");
   });
-  });
+});
+
+$("#codeforces-button").on("click",()=>{
+  var username = $("#codeforces-username").val().trim();
+  $("#codeforces-info").html("");
+  if(username.length==0){
+      alert("Field cannot be empty");
+      return;
+  }
+  $("#codeforces-button").hide();
+  $("#codeforces-wait").show();
+  $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('https://codeforces.com/api/user.status?handle=') + username + '&callback=?', function(data){
+    var output = JSON.parse(data.contents);
+    if(output.status=="FAILED"){
+      alert("There was some error.");
+      $("#codeforces-wait").hide();
+      $("#codeforces-button").show();
+      $("#codeforces-username").val('');
+      return;
+    }
+    var totalProblems = output.result.length;
+    var acceptedSolutions = 0;
+    output.result.forEach(element => {
+      if(element.verdict=="OK"){
+        acceptedSolutions+=1;
+      }
+    });
+    
+    $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('https://codeforces.com/api/user.rating?handle=') + username + '&callback=?', function(data){
+      $("#codeforces-wait").hide();
+      $("#codeforces-button").show();
+      output = JSON.parse(data.contents);
+      var rating = output.result[output.result.length-1].newRating;
+      $("#codeforces-info").append("<div>Problems Solved : "+acceptedSolutions+"</div>");
+      $("#codeforces-info").append("<div>Current Rating : "+rating+"</div>");
+      var accuracy = ((acceptedSolutions/totalProblems)*100).toFixed(2);
+      if(totalProblems == 0){
+        accuracy = (0).toFixed(2);
+      }
+      $("#codeforces-info").append("<div>Accuracy : "+accuracy+"</div>");
+    });
+
+
+});
+});
