@@ -7,7 +7,7 @@ if(username.length==0){
 }
 $("#codechef-button").hide();
 $("#codechef-wait").show();
-$.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('http://codechef.com/users/') + username + '&callback=?', function(data){
+$.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('http://codechef.com/users/') + username, function(data){
     
     var output = data.contents;
     var fake = output.search(/Could not find page you requested for/i);
@@ -73,7 +73,7 @@ $("#spoj-button").on("click",()=>{
   }
   $("#spoj-button").hide();
   $("#spoj-wait").show();
-  $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('http://spoj.com/users/') + username + '&callback=?', function(data){
+  $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('http://spoj.com/users/') + username, function(data){
     var output = data.contents;
     var fake = output.search(/Become a true programming master/i);
     $("#spoj-wait").hide();
@@ -124,7 +124,7 @@ $("#codeforces-button").on("click",()=>{
   }
   $("#codeforces-button").hide();
   $("#codeforces-wait").show();
-  $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('https://codeforces.com/api/user.status?handle=') + username + '&callback=?', function(data){
+  $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('https://codeforces.com/api/user.status?handle=') + username, function(data){
     var output = JSON.parse(data.contents);
     if(output.status=="FAILED"){
       alert("There was some error.");
@@ -141,7 +141,7 @@ $("#codeforces-button").on("click",()=>{
       }
     });
     
-    $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('https://codeforces.com/api/user.rating?handle=') + username + '&callback=?', function(data){
+    $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent('https://codeforces.com/api/user.rating?handle=') + username, function(data){
       $("#codeforces-wait").hide();
       $("#codeforces-button").show();
       output = JSON.parse(data.contents);
