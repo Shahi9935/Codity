@@ -14,10 +14,10 @@ $(document).ready(function(){
     var upcomingContests = [];
     upcomingContests = createArrayforContests(x);
     upcomingContests.forEach(element =>{
-      var icon = '<div class="col-sm-1">' + '<a target="_blank" href="https://www.' + element.host.toLowerCase() + '.com">' + '<img class="img img-fluid" style="height:50px" src="images/' + element.host + '.png' + '"></a>' + '</div>';
-      var name = '<div class="col-sm-7" style="padding-top:12px">' + '<a target="_blank" href="' + element.link + '">' + element.name + '</a></div>';
-      var start = '<div class="col-sm-2" style="padding-top:3px">' + element.start + '</div>';
-      var duration = '<div class="col-sm-2" style="padding-top:12px">' + element.duration + '</div>';
+      var icon = '<div class="col-1">' + '<a target="_blank" href="https://www.' + element.host.toLowerCase() + '.com">' + '<img class="img img-fluid" style="height:50px" src="images/' + element.host + '.png' + '"></a>' + '</div>';
+      var name = '<div class="col-7" style="padding-top:12px">' + '<a target="_blank" href="' + element.link + '">' + element.name + '</a></div>';
+      var start = '<div class="col-2" style="padding-top:3px">' + element.start + '</div>';
+      var duration = '<div class="col-2" style="padding-top:12px">' + element.duration + '</div>';
       $("#upcoming-contests").append('<div class="row" id="contest" style="border-bottom:1px dashed grey;padding-top:15px;height:80px">' + icon + name + start + duration + '</div>');
     });
   });
@@ -33,10 +33,10 @@ $(document).ready(function(){
     var runningContests = [];
     runningContests = createArrayforContests(x);
     runningContests.forEach(element =>{
-      var icon = '<div class="col-sm-1">' + '<a target="_blank" href="https://www.' + element.host.toLowerCase() + '.com">' + '<img class="img img-fluid" style="height:50px" src="images/' + element.host + '.png' + '"></a>' + '</div>';
-      var name = '<div class="col-sm-7" style="padding-top:12px">' + '<a target="_blank" href="' + element.link + '">' + element.name + '</a></div>';
-      var start = '<div class="col-sm-2" style="padding-top:3px">' + element.start + '</div>';
-      var duration = '<div class="col-sm-2" style="padding-top:3px">' + element.end + '</div>';
+      var icon = '<div class="col-1">' + '<a target="_blank" href="https://www.' + element.host.toLowerCase() + '.com">' + '<img class="img img-fluid" style="height:50px" src="images/' + element.host + '.png' + '"></a>' + '</div>';
+      var name = '<div class="col-7" style="padding-top:12px">' + '<a target="_blank" href="' + element.link + '">' + element.name + '</a></div>';
+      var start = '<div class="col-2" style="padding-top:3px">' + element.start + '</div>';
+      var duration = '<div class="col-2" style="padding-top:3px">' + element.end + '</div>';
       $("#running-contests").append('<div class="row" id="contest" style="border-bottom:1px dashed grey;padding-top:15px;height:80px">' + icon + name + start + duration + '</div>');
     });
   });
