@@ -8,7 +8,7 @@ $(document).ready(function(){
   var end = "&start__lt="+l.toISOString();
   var link = 'https://clist.by/api/v1/json/contest/?username=stwatbyshahi&api_key=34295086f175bc17d7ecdf2922a5d1d0b602783a&limit=1000&order_by=start&resource__in=1,2,63,73,26'+start+end
   console.log(link);
-  $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent(link), function(data){
+  $.getJSON('https://api.allorigins.ml/get?url=' + encodeURIComponent(link), function(data){
     var newJson = data.contents.replace(/\/"/g, '"');
     var x= JSON.parse(newJson);
     var upcomingContests = [];
@@ -27,7 +27,7 @@ $(document).ready(function(){
   end = "&start__lt="+d.toISOString();
   link = 'https://clist.by/api/v1/json/contest/?username=stwatbyshahi&api_key=34295086f175bc17d7ecdf2922a5d1d0b602783a&limit=1000&order_by=start&resource__in=1,2,63,73,26' + start + end;
   console.log(link);
-  $.getJSON('http://api.allorigins.ml/get?url=' + encodeURIComponent(link), function(data){
+  $.getJSON('https://api.allorigins.ml/get?url=' + encodeURIComponent(link), function(data){
     var newJson = data.contents.replace(/\/"/g, '"');
     var x= JSON.parse(newJson);
     var runningContests = [];
