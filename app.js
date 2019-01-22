@@ -21,6 +21,10 @@ app.get("/coding-calendar",(Req,res)=>{
     res.render('coding-calendar');
 });
 
+app.get("/search-problems",(Req,res)=>{
+    res.render('search-problems');
+});
+
 app.listen(port,()=>{
     console.log("Server Started");
 })

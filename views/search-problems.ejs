@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.8.10/themes/smoothness/jquery-ui.css" type="text/css">
-    <title>Codity</title>
+    <title>Codity | Search Problems</title>
     <style>
         body {
           font-family: "Lato", sans-serif;
@@ -56,69 +56,43 @@
           .sidenav {padding-top: 15px;}
           .sidenav a {font-size: 18px;}
         }
+
+        option{
+          font-size:30px;
+        }
         </style>
 </head>
 <body>
 
         <div id="mySidenav" class="sidenav">
                 <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                <a href="#">Home</a>
+                <a href="/">Home</a>
                 <a href="coding-calendar">Coding Calendar</a>
                 <a href="/search-problems">Search Problems</a>
                 <a href="#">About Us</a>
               </div>
         <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
 <div id="main">
-    <div class="row">
-        <div class="col-md-4">
-            <center>
-            <h1 class="display-4">
-            Codechef
-            </h1>
-            <br>
-            <input type="text" placeholder="Codechef username" style="width:90%;padding:10px;border-radius:10px" id="codechef-username">
-            <br><br>
-            <button class="btn btn-primary" id="codechef-button">Find</button>
-            <i class="fa fa-clock-o text-primary" id="codechef-wait" style="font-size:40px;display:none"></i>
-            <br><br>
-            <div style="width:100%" id="codechef-info">
+<div class="row">
+  <div class="col-4"></div>
+  <div class="col-4">
+    <h1 class="display-5">Choose your category</h1>
+    <select style="width:100%" id="codity-categories">    
+  
+    </select>
+  </div>
+  <div class="col-4"></div>
+</div>
+<br>
+<center>
+<button class="btn btn-danger" id="findProblemButton">Find</button>
+<i class="fa fa-clock-o text-primary" id="findProblemWait" style="font-size:40px;display:none"></i>
 
-            </div>
-            </center>
-        </div>
-        <div class="col-md-4">
-            <center>
-            <h1 class="display-4">
-            Spoj
-            </h1>
-            <br>
-            <input type="text" placeholder="Spoj username" style="width:90%;padding:10px;border-radius:10px" id="spoj-username">
-            <br><br>
-            <button class="btn btn-primary" id="spoj-button">Find</button>
-            <i class="fa fa-clock-o text-primary" id="spoj-wait" style="font-size:40px;display:none"></i>
-            <br><br>
-            <div style="width:100%" id="spoj-info">
+<br><br>
+<div class="row" style="width:80%;" id="listOfProblems">
 
-            </div>
-            </center>
-        </div>
-        <div class="col-md-4">
-            <center>
-            <h1 class="display-4">
-            Codeforces
-            </h1>
-            <br>
-            <input type="text" placeholder="Codeforces username" style="width:90%;padding:10px;border-radius:10px" id="codeforces-username">
-            <br><br>
-            <button class="btn btn-primary" id="codeforces-button">Find</button>
-            <i class="fa fa-clock-o text-primary" id="codeforces-wait" style="font-size:40px;display:none"></i>
-            <br><br>
-            <div style="width:100%" id="codeforces-info">
-
-            </div>
-            </center>
-        </div>
-    </div>
+</div>
+</center>
 </div>
     <script>
             function openNav() {
@@ -136,7 +110,7 @@
 			  src="https://code.jquery.com/jquery-3.3.1.min.js"
 			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
               crossorigin="anonymous"></script>
-    <script src="index.js"></script>
+    <script src="search-problems.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     
 </body>
