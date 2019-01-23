@@ -1,6 +1,7 @@
 $("#codechef-button").on("click",()=>{
 var username = $("#codechef-username").val().trim();
 $("#codechef-info").html("");
+$("#codechef-submission-info").html("");
 if(username.length==0){
     alert("Field cannot be empty");
     return;
@@ -61,6 +62,7 @@ $.getJSON('https://api.allorigins.ml/get?url=' + encodeURIComponent('https://cod
       accuracy = (0).toFixed(2);
     }
     $("#codechef-info").append("<div>Accuracy : "+accuracy+"</div>");
+    getCodechefSubmissions(username,0);
 });
 });
 
@@ -158,3 +160,73 @@ $("#codeforces-button").on("click",()=>{
 
 });
 });
+
+function getCodechefSubmissions(username,page){
+  var url = "https://www.codechef.com/recent/user";
+  var params="?user_handle=" + username + "&page=" + page;
+  $("#codechef-submission-info").html("");
+  $("#codechef-submission-info").append('<h4>Recent Submissions</h4><br><div class="row" style="border-bottom:2px solid black"><div class="col-4">Date/Time</div><div class="col-4">Problem</div><div class="col-4">Result</div></div>');
+  $.ajax({
+    url:'https://api.allorigins.ml/get?url='+encodeURIComponent(url + params),
+    type:"GET",
+    data:params,
+    cache:false,
+    timeout:1e4,
+    dataType:"json",
+    success:function(s){
+      output = JSON.parse(s.contents);
+      var regex = /<tr >/gi, result, indices = [];
+      while ( (result = regex.exec(output.content)) ) {
+          indices.push(result.index);
+      }
+      for(i=0;i<indices.length;i++){
+        var temp1 = output.content.substring(indices[i],indices[i]+210);
+        var temp2 = temp1.search(/<td >/i);
+        var temp3 = temp1.search(/<\/td>/i);
+        var time = temp1.substring(temp2+5,temp3);
+        temp2 = temp1.search(/'_blank'>/i);
+        temp3 = temp1.search(/<\/a>/i);
+        var code = temp1.substring(temp2+9,temp3);
+        var result = "";
+        temp2 = temp1.search(/pts]/i);
+        if(temp2!=-1){
+          result = "AC";
+          temp2 = temp1.search(/<br\/>/i);
+          temp3 = temp1.search(/<br \/>/i);
+          result = result + " [" + temp1.substring(temp2+5,temp3) + "pts]";
+        }
+        temp2 = temp1.search(/title='w/i);
+        if(temp2!=-1){
+          result = "WA";
+        }
+        temp2 = temp1.search(/title='time/i);
+        if(temp2!=-1){
+          result = "TLE";
+        }
+        temp2 = temp1.search(/title='c/i);
+        if(temp2!=-1){
+          result = "CE";
+        }
+        temp2 = temp1.search(/title='r/i);
+        if(temp2!=-1){
+          result = "RE";
+        }
+        temp2 = temp1.search(/title='acc/i);
+        if(temp2!=-1){
+          result = "AC";
+        }
+        console.log(time);
+        console.log(code);
+        console.log(result);
+        $("#codechef-submission-info").append('<div class="row" style="border-bottom:1px dashed black;padding:10px"><div class="col-4">' + time + '</div><div class="col-4"><a target="_blank" href="https://www.codechef.com/problems/' + code + '">' + code + '</a></div><div class="col-4">' + result + '</div></div>');
+    }
+      if(page==0){
+        $("#codechef-submission-info").append('<div class="row" style="width:100%;border-top:1px solid grey;padding:10px;"><div class="col-5"><center><i class="fa fa-angle-left" style="font-size:20px;float:left;"></i></center></div><div class="col-2"><center>' + (page+1) + '</center></div><div class="col-5"><center><i class="fa fa-angle-right col-1" style="font-size:20px;float:right;cursor:pointer" onclick=getCodechefSubmissions("' + username + '",' + (page+1) + ')></i></center></div></div>');
+      }else if(page==(parseInt(output.max_page)-1)){
+        $("#codechef-submission-info").append('<div class="row" style="width:100%;border-top:1px solid grey;padding:10px;"><div class="col-5"><center><i class="fa fa-angle-left" style="font-size:20px;float:left;cursor:pointer" onclick=getCodechefSubmissions("' + username + '",' + (page-1) + ')></i></center></div><div class="col-2"><center>' + (page+1) + '</center></div><div class="col-5"><center><i class="fa fa-angle-right col-1" style="font-size:20px;float:right;"></i></center></div></div>');
+      }else{
+      $("#codechef-submission-info").append('<div class="row" style="width:100%;border-top:1px solid grey;padding:10px;"><div class="col-5"><center><i class="fa fa-angle-left" style="font-size:20px;float:left;cursor:pointer" onclick=getCodechefSubmissions("' + username + '",' + (page-1) + ')></i></center></div><div class="col-2"><center>' + (page+1) + '</center></div><div class="col-5"><center><i class="fa fa-angle-right col-1" style="font-size:20px;float:right;cursor:pointer" onclick=getCodechefSubmissions("' + username + '",' + (page+1) + ')></i></center></div></div>');
+      }
+    }
+  });
+}
