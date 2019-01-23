@@ -86,13 +86,25 @@ function findCodechefProblems(tag,callback){
         return;
     }
     var obj = [];
-    var link = "https://www.codechef.com/tags/problems/"+tag;
-    //console.log(link);
+    var link = "https://www.codechef.com/get/tags/problems/"+tag;
     $.getJSON('https://api.allorigins.ml/get?url=' + encodeURIComponent(link), function(data){
-    var output = data.contents;
-    //console.log(output);
-    }); 
+    var newJson = data.contents.replace(/\/"/g, '"');
+    var output = JSON.parse(newJson);
+    var i;
+    var j=0;
+    for(i in output.all_problems){
+        obj.push({});
+        obj[j].link = "https://www.codechef.com/problems/" + output.all_problems[i].code;
+        obj[j].name = output.all_problems[i].name;
+        obj[j].users = output.all_problems[i].solved_by;
+        obj[j].host = "CODECHEF";
+        j+=1;
+    }
+    codechefData=obj;
     callback();
+    }).fail(function(){
+        callback();
+    }); 
 }
 
 function findCodeforcesProblems(tag,callback){
