@@ -69,6 +69,7 @@ $.getJSON('https://api.allorigins.ml/get?url=' + encodeURIComponent('https://cod
 $("#spoj-button").on("click",()=>{
   var username = $("#spoj-username").val().trim();
   $("#spoj-info").html("");
+  $("#spoj-submission-info").html("");
   if(username.length==0){
       alert("Field cannot be empty");
       return;
@@ -114,12 +115,14 @@ $("#spoj-button").on("click",()=>{
       accuracy = (0).toFixed(2);
     }
     $("#spoj-info").append("<div>Accuracy : "+accuracy+"</div>");
+    getSpojSubmissions(username,0);
   });
 });
 
 $("#codeforces-button").on("click",()=>{
   var username = $("#codeforces-username").val().trim();
   $("#codeforces-info").html("");
+  $("#codeforces-submission-info").html("");
   if(username.length==0){
       alert("Field cannot be empty");
       return;
@@ -155,6 +158,7 @@ $("#codeforces-button").on("click",()=>{
         accuracy = (0).toFixed(2);
       }
       $("#codeforces-info").append("<div>Accuracy : "+accuracy+"</div>");
+      getCodeforcesSubmissions(username);
     });
 
 
@@ -209,15 +213,12 @@ function getCodechefSubmissions(username,page){
         }
         temp2 = temp1.search(/title='r/i);
         if(temp2!=-1){
-          result = "RE";
+          result = "RTE";
         }
         temp2 = temp1.search(/title='acc/i);
         if(temp2!=-1){
           result = "AC";
         }
-        console.log(time);
-        console.log(code);
-        console.log(result);
         $("#codechef-submission-info").append('<div class="row" style="border-bottom:1px dashed black;padding:10px"><div class="col-4">' + time + '</div><div class="col-4"><a target="_blank" href="https://www.codechef.com/problems/' + code + '">' + code + '</a></div><div class="col-4">' + result + '</div></div>');
     }
       if(page==0){
@@ -227,6 +228,102 @@ function getCodechefSubmissions(username,page){
       }else{
       $("#codechef-submission-info").append('<div class="row" style="width:100%;border-top:1px solid grey;padding:10px;"><div class="col-5"><center><i class="fa fa-angle-left" style="font-size:20px;float:left;cursor:pointer" onclick=getCodechefSubmissions("' + username + '",' + (page-1) + ')></i></center></div><div class="col-2"><center>' + (page+1) + '</center></div><div class="col-5"><center><i class="fa fa-angle-right col-1" style="font-size:20px;float:right;cursor:pointer" onclick=getCodechefSubmissions("' + username + '",' + (page+1) + ')></i></center></div></div>');
       }
+      if((parseInt(output.max_page)==1)){
+        $("#codechef-submission-info").append('<div class="row" style="width:100%;border-top:1px solid grey;padding:10px;"><div class="col-5"><center><i class="fa fa-angle-left" style="font-size:20px;float:left;"></i></center></div><div class="col-2"><center>' + (page+1) + '</center></div><div class="col-5"><center><i class="fa fa-angle-right col-1" style="font-size:20px;float:right;"></i></center></div></div>');
+      }
     }
   });
+}
+
+function getSpojSubmissions(username,page){
+  var url = "https://www.spoj.com/status/" + username + "/all/start=" + (page*20).toString(); 
+  $("#spoj-submission-info").html("");
+  $("#spoj-submission-info").append('<h4>Recent Submissions</h4><br><div class="row" style="border-bottom:2px solid black"><div class="col-4">Date/Time</div><div class="col-4">Problem</div><div class="col-4">Result</div></div>');
+  $.getJSON('https://api.allorigins.ml/get?url=' + encodeURIComponent(url), function(data){
+    var output = data.contents;
+    var regex = /<tr class="kol/gi, result, indices = [];
+      while ( (result = regex.exec(output)) ) {
+          indices.push(result.index);
+      }
+      var flag=0;
+      if(indices.length<20||page==5){
+        flag=1;
+      }
+      for(i=0;i<indices.length;i++){
+        var temp1 = output.substring(indices[i],indices[i]+500);
+        var temp2 = temp1.search(/<span title="/i) ;
+        var temp3 = temp1.search(/<\/span>/i) ;
+        var time = temp1.substring(temp2+34,temp3);
+        temp2 = temp1.search(/href="\/problems\//i) ;
+        temp3 = temp1.search(/\/"/i) ;
+        var code = temp1.substring(temp2+16,temp3);
+        var result="";
+        temp2 = temp1.search(/status="/i) ;
+        temp3 = temp1.search(/" final/i) ;
+        var status = parseInt(temp1.substring(temp2+8,temp3));
+        if(status==11){
+          result = "CE";
+        }
+        if(status==14){
+          result = "WA";
+        }
+        if(status==13){
+          result = "TLE";
+        }
+        if(status==15){
+          result = "AC";
+        }
+        if(status==12){
+          result = "RTE";
+        }
+        $("#spoj-submission-info").append('<div class="row" style="border-bottom:1px dashed black;padding:10px"><div class="col-4">' + time + '</div><div class="col-4"><a target="_blank" href="https://www.spoj.com/problems/' + code + '">' + code + '</a></div><div class="col-4">' + result + '</div></div>');
+      }
+      if(page==0 && flag==0){
+        $("#spoj-submission-info").append('<div class="row" style="width:100%;border-top:1px solid grey;padding:10px;"><div class="col-5"><center><i class="fa fa-angle-left" style="font-size:20px;float:left;"></i></center></div><div class="col-2"><center>' + (page+1) + '</center></div><div class="col-5"><center><i class="fa fa-angle-right col-1" style="font-size:20px;float:right;cursor:pointer" onclick=getSpojSubmissions("' + username + '",' + (page+1) + ')></i></center></div></div>');
+      }else if(flag==1 && page>0){
+        $("#spoj-submission-info").append('<div class="row" style="width:100%;border-top:1px solid grey;padding:10px;"><div class="col-5"><center><i class="fa fa-angle-left" style="font-size:20px;float:left;cursor:pointer" onclick=getSpojSubmissions("' + username + '",' + (page-1) + ')></i></center></div><div class="col-2"><center>' + (page+1) + '</center></div><div class="col-5"><center><i class="fa fa-angle-right col-1" style="font-size:20px;float:right;"></i></center></div></div>');
+      }else{
+        if(!(page==0 && flag==1)){
+      $("#spoj-submission-info").append('<div class="row" style="width:100%;border-top:1px solid grey;padding:10px;"><div class="col-5"><center><i class="fa fa-angle-left" style="font-size:20px;float:left;cursor:pointer" onclick=getSpojSubmissions("' + username + '",' + (page-1) + ')></i></center></div><div class="col-2"><center>' + (page+1) + '</center></div><div class="col-5"><center><i class="fa fa-angle-right col-1" style="font-size:20px;float:right;cursor:pointer" onclick=getSpojSubmissions("' + username + '",' + (page+1) + ')></i></center></div></div>');
+        }
+      }
+      if(page==0&&flag==1){
+        $("#spoj-submission-info").append('<div class="row" style="width:100%;border-top:1px solid grey;padding:10px;"><div class="col-5"><center><i class="fa fa-angle-left" style="font-size:20px;float:left;"></i></center></div><div class="col-2"><center>' + (page+1) + '</center></div><div class="col-5"><center><i class="fa fa-angle-right col-1" style="font-size:20px;float:right;"></i></center></div></div>');
+      }
+});
+}
+
+function getCodeforcesSubmissions(username){
+  var url = "https://codeforces.com/api/user.status?handle=" + username + "&from=1&count=100000";
+  $("#codeforces-submission-info").html("");
+  $("#codeforces-submission-info").append('<h4>Recent Submissions</h4><br><div class="row" style="border-bottom:2px solid black"><div class="col-4">Date/Time</div><div class="col-4">Problem</div><div class="col-4">Result</div></div>');
+  $.getJSON('https://api.allorigins.ml/get?url=' + encodeURIComponent(url), function(data){
+    var newJson = data.contents.replace(/\/"/g, '"');
+    var x= JSON.parse(newJson);
+    x.result.forEach(element=>{
+      var link = "https://www.codeforces.com/problemset/problem/" + element.problem.contestId + "/" + element.problem.index;
+      var name = element.problem.name;
+      var ts= new Date(element.creationTimeSeconds*1000);
+      var time = ts.toLocaleString();
+      var result = "";
+      if(element.verdict.startsWith("W")){
+          result = "WA";
+      }
+      if(element.verdict.startsWith("T")){
+        result = "TLE";
+      }
+      if(element.verdict.startsWith("R")){
+        result = "RTE";
+      }
+      if(element.verdict.startsWith("C")){
+        result = "CE";
+      }
+      if(element.verdict.startsWith("O")){
+        result = "AC";
+      }
+      
+      $("#codeforces-submission-info").append('<div class="row" style="border-bottom:1px dashed black;padding:10px"><div class="col-4">' + time + '</div><div class="col-4"><a target="_blank" href="' + link + '">' + name + '</a></div><div class="col-4">' + result + '</div></div>');
+    });
+    
+});
 }
