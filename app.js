@@ -47,6 +47,7 @@ next();
 });
 
 let User= require('./models/user');
+let Todo= require('./models/todo');
 
 require('./config/passport')(passport);
 app.use(passport.initialize());
@@ -85,7 +86,27 @@ app.get('/user/:userName', function(req, res, next) {
             //Send 404 page
         }
         });
-}); 
+});
+
+app.get('/todo/:userName', function(req, res, next) {
+    if(req.user){
+    Todo.findOne({username:req.params.userName},(err,userFound)=>{
+        if(userFound){
+                res.render('todo',{
+                    userprofile:userFound,
+                    user:req.user
+                        });
+        }else{
+            req.flash('danger','There was some error.');
+            res.redirect('/');
+            //Send 404 page
+        }
+        });
+    }else{
+        req.flash('danger','Log in first');
+        res.redirect('/login');
+    }
+});
 
 app.get("/coding-calendar",(Req,res)=>{
     res.render('coding-calendar');
@@ -140,6 +161,10 @@ app.post('/register',(req,res)=>{
             codechefhandle:req.body.codechefhandle,
             codeforceshandle:req.body.codeforceshandle
         });
+        let newTodo = Todo({
+            username:req.body.username,
+            todo:[]
+        });
         bcrypt.genSalt(10,(err,salt)=>{
             bcrypt.hash(newUser.password,salt,(err,hash)=>{
                 if(err){
@@ -153,6 +178,12 @@ app.post('/register',(req,res)=>{
                         console.log(err);
                         return;
                         }
+                newTodo.save((err)=>{
+                        if(err){
+                        console.log(err);
+                        return;
+                    }
+                });
                 req.flash('success','User registered successfully');
                 res.redirect('/login');
     });
@@ -166,6 +197,45 @@ app.post('/login',(req,res,next)=>{
 		failureRedirect:'/login',
 		failureFlash:true
 	})(req,res,next);
+});
+
+app.post('/todo/:username',(req,res,next)=>{
+	if(req.user.username == req.params.username){
+        req.checkBody('todoproblems','Atleast one Todo Problem is required').notEmpty();
+        let errors = req.validationErrors();
+    if(errors){
+            
+            for(var i=0;i<errors.length;i++){
+                req.flash('danger',errors[i].msg);
+            }
+            res.redirect('/todo/'+req.params.username);
+            return;
+        }
+    let temparr = req.body.todoproblems.split(/\r?\n/);
+    Todo.findOne({ username: req.user.username }, function(errr, todofound) {
+        if (todofound) {
+            let temp = todofound.todo;
+            temp = temp.concat(temparr);
+            let todonew = {};
+            todonew.todo = temp;
+            Todo.updateOne({username:req.user.username},todonew,(err)=>{
+                if(err){
+                    console.log(err);
+                    req.flash('danger','There was some rror. Please try again.');
+                    res.redirect('/todo/'+req.user.username);
+                    return;
+                }
+            req.flash('info','Todo problems added');
+             res.redirect('/todo/'+req.user.username);
+        });
+        }else{
+        res.redirect('/todo/'+req.params.username);
+        }
+    });
+    }else{
+        req.flash('danger',"Don't try to add todo's for others");
+        res.redirect('/login');
+    }
 });
 
 

@@ -10,6 +10,9 @@
     <a href="/">Home</a>
     <a href="/coding-calendar">Coding Calendar</a>
     <a href="/search-problems">Search Problems</a>
+    <% if(user){ %>
+      <a href="/todo/<%= user.username %>" >Todolist</a>
+      <% } %>
     <a href="#">About Us</a>
   </div>
 <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
