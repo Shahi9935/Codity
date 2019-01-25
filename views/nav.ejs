@@ -1,0 +1,15 @@
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <% if(user){ %>
+      <a href="/user/<%= user.username %>" ><%=user.username%></a>
+      <a href="/logout" >Logout</a>
+       <% }else{ %>
+       <a href="/register" >Register</a>
+       <a href="/login" >Login</a>
+       <% } %>
+    <a href="/">Home</a>
+    <a href="/coding-calendar">Coding Calendar</a>
+    <a href="/search-problems">Search Problems</a>
+    <a href="#">About Us</a>
+  </div>
+<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>

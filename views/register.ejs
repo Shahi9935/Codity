@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register</title>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css' rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <br>  
+        <%- messages('message', locals) %>
+        <h1>Register to Codity</h1>
+        <br>
+        <form method="Post" action="/register">
+            <div id="form-group">
+                <label>Name:</label>
+                <input class="form-control" name="name" type="text">
+            </div>
+            <div id="form-group">
+                <label>Username:</label>
+                <input class="form-control" name="username" type="text">
+            </div>
+            <div id="form-group">
+                <label>Password:</label>
+                <input class="form-control" name="password" type="password">
+            </div>
+            <div id="form-group">
+                <label>Confirm Password:</label>
+                <input class="form-control" name="password2" type="password">
+            </div>
+            <div id="form-group">
+                <label>Spoj Handle:</label>
+                <input class="form-control" name="spojhandle" type="text">
+            </div>
+            <div id="form-group">
+                <label>Codechef Handle:</label>
+                <input class="form-control" name="codechefhandle" type="text">
+            </div>
+            <div id="form-group">
+                <label>Codeforces Handle:</label>
+                <input class="form-control" name="codeforceshandle" type="text">
+            </div>
+            <br>
+            <input class="btn btn-outline-success" type="submit" value="Register">
+        </form>
+</div>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js'></script>
+</body>
+</html>
