@@ -64,7 +64,12 @@
             </div>
             <div class="col-1"></div>
         </div>
+        <br><br>
+        <center>
+        <div id="chartContainer" style="height: 400px; width: 600px"></div>
+        </center>
     </div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="/nav.js"></script>
     <script
 			  src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -80,5 +85,121 @@
         initializeSpoj(susername);
         initializeCodeforces(cfusername);
     </script>
+       <script>
+        var ccusername = document.getElementById("codechefuserlink").getAttribute("data-username");
+        var cfusername = document.getElementById("codeforcesuserlink").getAttribute("data-username");
+        var codechefRating = [];
+        var codeforcesRating = [];
+        window.onload = function () {
+        getCodechefRating(function(){
+            getCodeforcesRating(function(){
+                plotChart();
+            });
+        });
+        
+        }
+
+        function getCodechefRating(callback){
+            $.getJSON('https://api.allorigins.ml/get?url=' + encodeURIComponent('https://codechef.com/users/') + ccusername, function(data){
+                var output = data.contents;
+                var fake = output.search(/Could not find page you requested for/i);
+                if(fake > 0){
+                    callback();
+                    return;
+                }
+                var flag = output.search(/var all_rating = /i);
+                var flag2 = output.search(/var current_user_rating =/i);
+                var temp1 = output.substring(flag,flag2);
+                var temp2 = temp1.search(/\[/i);
+                var temp3 = temp1.substring(temp2);
+                var ratingInString = temp3.substring(0,temp3.length-4)
+                var data = JSON.parse(ratingInString);
+                
+                data.forEach((ele)=>{
+                    var temp1 = new Date(ele.end_date);
+                    var date = temp1.getDate();
+                    var month = temp1.getMonth();
+                    var year = temp1.getFullYear();
+                    
+                    codechefRating.push({"name":ele.name,"y":parseInt(ele.rating),"x":new Date(year,month,date)});
+                });
+                callback();
+            }).fail(function(){
+                callback();
+            });
+        }
+        
+        function getCodeforcesRating(callback){
+            $.getJSON('https://api.allorigins.ml/get?url=' + encodeURIComponent('https://codeforces.com/api/user.rating?handle=') + cfusername, function(data){
+                var output = JSON.parse(data.contents);
+                if(output.status=="FAILED"){
+                    callback();
+                return;
+                }
+                output.result.forEach((ele)=>{
+                    var temp1 = new Date(ele.ratingUpdateTimeSeconds * 1000);
+                    
+                    var date = temp1.getDate();
+                    var month = temp1.getMonth();
+                    var year = temp1.getFullYear();
+                    
+                    codeforcesRating.push({"name":ele.contestName,"y":ele.newRating,"x":new Date(year,month,date)});
+                });
+                
+                callback();
+            }).fail(function(){
+                callback();
+            });
+        }
+
+        function plotChart(){
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            title:{
+                text: "Contest Ratings"
+            },
+            axisX: {
+                valueFormatString: "DD MM,YYYY"
+            },
+            axisY: {
+                title: "Rating",
+                includeZero: false
+            },
+            legend:{
+                cursor: "pointer",
+                fontSize: 16,
+                itemclick: toggleDataSeries
+            },
+            toolTip:{
+                shared: true
+            },
+            data: [{
+                name: "Codechef",
+                type: "spline",
+                showInLegend: true,
+                dataPoints: codechefRating
+            },
+            {
+                name: "Codeforces",
+                type: "spline",
+                showInLegend: true,
+                dataPoints: codeforcesRating
+            }]
+        });
+        chart.render();
+        
+        function toggleDataSeries(e){
+            if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            }
+            else{
+                e.dataSeries.visible = true;
+            }
+            chart.render();
+        }            
+
+        }
+        </script>
 </body>
 </html>
