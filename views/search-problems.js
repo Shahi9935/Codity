@@ -25,7 +25,7 @@ $("#findProblemButton").on("click",()=>{
                 shuffle(allData,function(){
                     $("#listOfProblems").append('<div class="row" style="width:100%;border-bottom:2px solid black"><div class="col-1">Site</div><div class="col-8">Name</div><div class="col-3">Users<i class="fa fa-arrow-up" style="margin-left:5px;cursor:pointer" onclick="sortAscending()"></i><i class="fa fa-arrow-down" style="margin-left:5px;cursor:pointer" onclick="sortDescending()"></i></div></div>');
                     allData.forEach(element=>{
-                        var icon = '<div class="col-1">' + '<a target="_blank" href="https://www.' + element.host.toLowerCase() + '.com">' + '<img class="img img-fluid" style="height:50px" src="images/' + element.host + '.png' + '"></a>' + '</div>';
+                        var icon = '<div class="col-1">' + '<a target="_blank" href="https://www.' + element.host.toLowerCase() + '.com">' + '<img class="img img-fluid" style="height:50px" src="../images/' + element.host + '.png' + '"></a>' + '</div>';
                         var name = '<div class="col-8" style="padding-top:12px">' + '<a target="_blank" href="' + element.link + '">' + element.name + '</a></div>';
                         var users = '<div class="col-3" style="padding-top:12px">' + element.users + '</div>';
                         $("#listOfProblems").append('<div class="row" style="border-bottom:1px solid grey;width:100%">' + icon + name + users + '</div>');

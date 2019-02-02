@@ -84,6 +84,8 @@ app.get('/user/:userName', function(req, res, next) {
                         });
         }else{
             //Send 404 page
+            req.flash('danger','User not found');
+            res.redirect('/login');
         }
         });
 });
@@ -97,8 +99,8 @@ app.get('/todo/:userName', function(req, res, next) {
                     user:req.user
                         });
         }else{
-            req.flash('danger','There was some error.');
-            res.redirect('/');
+            req.flash('danger','User not found');
+            res.redirect('/login');
             //Send 404 page
         }
         });
@@ -106,6 +108,21 @@ app.get('/todo/:userName', function(req, res, next) {
         req.flash('danger','Log in first');
         res.redirect('/login');
     }
+});
+
+app.get('/submissions/:userName', function(req, res, next) {
+    User.findOne({username:req.params.userName},(err,userFound)=>{
+        if(userFound){
+                res.render('submissions',{
+                    userprofile:userFound,
+                    user:req.user,
+                        });
+        }else{
+            //Send 404 page
+            req.flash('danger','User not found');
+            res.redirect('/login');
+        }
+        });
 });
 
 app.get("/coding-calendar",(Req,res)=>{

@@ -1,3 +1,5 @@
+var currentFocus = "codechef-button";
+
 $("#codechef-button").on("click",()=>{
 var username = $("#codechef-username").val().trim();
 $("#codechef-info").html("");
@@ -188,6 +190,10 @@ function getCodechefSubmissions(username,page){
         var temp2 = temp1.search(/<td >/i);
         var temp3 = temp1.search(/<\/td>/i);
         var time = temp1.substring(temp2+5,temp3);
+        var time2 = time.substring(9,11);
+        var time3 = time.substring(12,14);
+        time = time.replaceAt(9,time3);
+        time = new Date(parseInt(new Date(time.replaceAt(12,time2)).getTime())).toLocaleString();
         temp2 = temp1.search(/'_blank'>/i);
         temp3 = temp1.search(/<\/a>/i);
         var code = temp1.substring(temp2+9,temp3);
@@ -253,7 +259,7 @@ function getSpojSubmissions(username,page){
         var temp1 = output.substring(indices[i],indices[i]+500);
         var temp2 = temp1.search(/<span title="/i) ;
         var temp3 = temp1.search(/<\/span>/i) ;
-        var time = temp1.substring(temp2+34,temp3);
+        var time = new Date(parseInt(new Date(temp1.substring(temp2+34,temp3)).getTime())).toLocaleString();
         temp2 = temp1.search(/href="\/problems\//i) ;
         temp3 = temp1.search(/\/"/i) ;
         var code = temp1.substring(temp2+16,temp3);
@@ -326,4 +332,22 @@ function getCodeforcesSubmissions(username){
     });
     
 });
+}
+
+function changeEnterFocus(id){
+  currentFocus = id;
+}
+
+
+
+window.onkeyup = function(e) {
+  var key = e.keyCode ? e.keyCode : e.which;
+
+  if (key == 13) {
+      document.getElementById(currentFocus).click();
+  }
+}
+
+String.prototype.replaceAt=function(index, replacement) {
+  return this.substr(0, index) + replacement+ this.substr(index + replacement.length);
 }
