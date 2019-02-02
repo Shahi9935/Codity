@@ -159,7 +159,9 @@ app.post('/register',(req,res)=>{
             for(var i=0;i<errors.length;i++){
                 req.flash('danger',errors[i].msg);
             }
+            res.locals.user = req.user || null;
             res.render('register');
+            return;
         }
     User.findOne({ username: req.body.username }, function(errr, userexists) {
           if (errr) { return done(errr); }
@@ -209,6 +211,7 @@ app.post('/register',(req,res)=>{
     });
 
 app.post('/login',(req,res,next)=>{
+    res.locals.user = req.user || null;
 	passport.authenticate('local',{
 		successRedirect:'/user/'+req.body.username,
 		failureRedirect:'/login',

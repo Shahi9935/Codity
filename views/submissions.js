@@ -155,6 +155,10 @@ function getCodechefSubmissions(username,page,callback){
           if(temp2!=-1){
             result = "AC";
           }
+          temp2 = temp1.search(/title='memo/i);
+          if(temp2!=-1){
+            result = "MLE";
+          }
           obj.result = result;
           obj.host = "CODECHEF";
           codechefsubmissions.push(obj);
@@ -222,6 +226,9 @@ function getCodechefSubmissions(username,page,callback){
           if(status==12){
             result = "RTE";
           }
+          if(result==""){
+              result="MLE";
+          }
           obj.result = result;
           obj.host = "SPOJ";
           spojsubmissions.push(obj);
@@ -272,6 +279,9 @@ function getCodeforcesSubmissions(username,callback){
         if(element.verdict.startsWith("C")){
           result = "CE";
         }
+        if(element.verdict.startsWith("M")){
+            result = "MLE";
+        }
         if(element.verdict.startsWith("O")){
           result = "AC";
         }
@@ -294,13 +304,80 @@ function displayEverything(){
       });
     console.log(submissions);
     $("#loadingAnimation").hide();
+    var ac=0,wa=0,tle=0,rte=0,mle=0,ce=0,others=0,total=0,pa=0;
     submissions.forEach(element=>{
+        switch(element.result){
+            case "AC":
+            ac=ac+1;
+            break;
+            case "WA":
+            wa=wa+1;
+            break;
+            case "TLE":
+            tle=tle+1;
+            break;
+            case "RTE":
+            rte=rte+1;
+            break;
+            case "CE":
+            ce=ce+1;
+            break;
+            case "MLE":
+            mle=mle+1;
+            break;
+            default:
+            if(element.result.startsWith("AC")){
+                pa=pa+1;
+            }else{
+            others=others+1;
+            }
+            break;
+        }
+        total = total+1;
         var icon = '<div class="col-1">' + '<a target="_blank" href="https://www.' + element.host.toLowerCase() + '.com">' + '<img class="img img-fluid" style="height:50px" src="../images/' + element.host + '.png' + '"></a>' + '</div>';
         var time = '<div class="col-3" style="padding-top:12px">' + element.time + '</div>';
         var name = '<div class="col-7" style="padding-top:12px">' + '<a target="_blank" href="' + element.link + '">' + element.code + '</a></div>';
         var result = '<div class="col-1" style="padding-top:12px">' + element.result + '</div>';
         $("#submissions").append('<div class="row" style="border-bottom:1px solid grey">' + icon + name + time + result + '</div>')
         });
+        $("#chartContainer").show();
+
+        CanvasJS.addColorSet("customColorSet",
+                [
+                    "#3CB371",
+                    "#90EE90",
+                    "#F25C5C",
+                    "#E6F72A",
+                    "#B83BDD",
+                    "#6331ED",
+                    "#847B7B",
+                    "#E5A742"
+                ]);
+        var chart = new CanvasJS.Chart("chartContainer", {
+            colorSet: "customColorSet",
+            animationEnabled: true,
+            title: {
+                text: "Acceptance Pie Chart"
+            },
+            data: [{
+                type: "pie",
+                startAngle: 270,
+                yValueFormatString: "##0.00\"%\"",
+                indexLabel: "{label} {y}",
+                toolTipContent: "{label} {count} ({y})",
+                dataPoints: [
+                    {y: (ac/total)*100, label: "Accepted", count: ac},
+                    {y: (pa/total)*100, label: "Partially Accepted", count: pa},
+                    {y: (wa/total)*100, label: "Wrong Answer", count: wa},
+                    {y: (tle/total)*100, label: "Time Limit Exceeded", count: tle},
+                    {y: (rte/total)*100, label: "Run-Time Error", count: rte},
+                    {y: (mle/total)*100, label: "Memory Limit Exceeded", count: mle},
+                    {y: (ce/total)*100, label: "Compilation Error", count: ce},
+                    {y: (others/total)*100, label: "Others", count: others}
+                ]
+            }]
+        });
+        chart.render();
 }
 
 String.prototype.replaceAt=function(index, replacement) {
