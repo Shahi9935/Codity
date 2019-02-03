@@ -23,7 +23,11 @@ required:false
 password:{
 type:String,
 required:true
-}
+},
+following: [{
+    type: String,
+    required:true
+    }]
  });
 
 const User= module.exports= mongoose.model('User',UserSchema);

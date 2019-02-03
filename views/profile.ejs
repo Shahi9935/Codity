@@ -13,7 +13,7 @@
 <body>
     <% include nav %>
     <div id="main">
-            <center><a href="/submissions/<%= userprofile.username %>" target="_blank"><h1 class="display-4"><%=userprofile.name %></h1></a></center>
+            <center><a href="/submissions/<%= userprofile.username %>" target="_blank"><h1 class="display-4" id="name" data-username="<%=userprofile.username%>"><%=userprofile.name %></h1></a></center>
             <br>
         <div class="row">
             <div class="col-1"></div>
@@ -68,6 +68,27 @@
         <center>
         <div id="chartContainer" style="height: 400px; width: 600px"></div>
         </center>
+        <% if(user){ %>
+            <% if(user.username != userprofile.username){ %>
+            <% if(user.following.includes(userprofile.username)){ %>
+        <div style="bottom:100px;right:24px;position:fixed;padding:15px;background-color:#3FFF14;border-radius:50%;width:60px;cursor:pointer" id="unfollowme">
+            <center><i class="fa fa-check" style="font-size:30px;color:white"></i></center>
+            </div>
+
+        <div style="bottom:100px;right:24px;position:fixed;padding:15px;background-color:#32E0FF;border-radius:50%;width:60px;cursor:pointer;display:none" id="followme">
+            <center><i class="fa fa-bookmark" style="font-size:30px;color:white"></i></center>
+            </div>
+        
+            <% }else{ %>
+        <div style="bottom:100px;right:24px;position:fixed;padding:15px;background-color:#32E0FF;border-radius:50%;width:60px;cursor:pointer" id="followme">
+            <center><i class="fa fa-bookmark" style="font-size:30px;color:white"></i></center>
+            </div>
+
+        <div style="bottom:100px;right:24px;position:fixed;padding:15px;background-color:#3FFF14;border-radius:50%;width:60px;cursor:pointer;display:none" id="unfollowme">
+            <center><i class="fa fa-check" style="font-size:30px;color:white"></i></center>
+            </div>
+        
+        <% }}} %>
     </div>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="/nav.js"></script>
@@ -76,8 +97,57 @@
 			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
               crossorigin="anonymous"></script>
     <script src="/profile.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script>
+        var username = document.getElementById("name").getAttribute("data-username");
+
+        $("#followme").on("click",(event)=>{
+            event.preventDefault();
+
+            $("#followme").hide();
+            $("#unfollowme").show();
+
+                $.ajax({
+                global: false,
+                type: 'POST',
+                url: '/user/' + username,
+                dataType: 'html',
+                data: {
+                    type:1
+                },
+                success: function (result) {
+                    
+                },
+                error: function (request, status, error) {
+                    serviceError();
+                }
+                });
+        });
+
+        $("#unfollowme").on("click",(event)=>{
+            event.preventDefault();
+
+            $("#unfollowme").hide();
+            $("#followme").show();
+
+                $.ajax({
+                global: false,
+                type: 'POST',
+                url: '/user/' + username,
+                dataType: 'html',
+                data: {
+                    type:2
+                },
+                success: function (result) {
+        
+                },
+                error: function (request, status, error) {
+                    serviceError();
+                }
+                });
+        });
+
+
         var ccusername = document.getElementById("codechefuserlink").getAttribute("data-username");
         var susername = document.getElementById("spojuserlink").getAttribute("data-username");
         var cfusername = document.getElementById("codeforcesuserlink").getAttribute("data-username");

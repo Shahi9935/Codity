@@ -62,6 +62,11 @@ function initializeCodechef(username){
           accuracy = (0).toFixed(2);
         }
         $("#codechef-info").append("<div>Accuracy : "+accuracy+"</div>");
+    }).fail(function(){
+      $("#codechef-info").append("<div>Problems Solved : -</div>");
+      $("#codechef-info").append("<div>Global Rank : -</div>");
+      $("#codechef-info").append("<div>Accuracy : -</div>");  
+      $("#codechef-wait").hide();
     });
     }
     

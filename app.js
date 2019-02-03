@@ -178,7 +178,8 @@ app.post('/register',(req,res)=>{
             password:req.body.password,
             spojhandle:req.body.spojhandle,
             codechefhandle:req.body.codechefhandle,
-            codeforceshandle:req.body.codeforceshandle
+            codeforceshandle:req.body.codeforceshandle,
+            following:[]
         });
         let newTodo = Todo({
             username:req.body.username,
@@ -218,6 +219,52 @@ app.post('/login',(req,res,next)=>{
 		failureFlash:true
 	})(req,res,next);
 });
+
+//
+app.post('/user/:username',(req,res)=>{
+    if(req.user){
+    if(req.body.type == '1'){
+    var obj ={};
+    User.findOne({ username: req.user.username }, function(errr, userfound) {
+        if (userfound) {
+            obj.following = userfound.following;
+            obj.following.push(req.params.username);
+    User.updateOne({username:req.user.username},obj,(err)=>{
+        if(err){
+            console.log(err);
+            req.flash('danger','There was some rror. Please try again.');
+            res.redirect('/user/'+req.params.username);
+            return;
+        }
+    });
+}
+    });
+}else{
+    var obj ={};
+    User.findOne({ username: req.user.username }, function(errr, userfound) {
+        if (userfound) {
+            obj.following = userfound.following;
+            var index = 0;
+            while(index>=0){
+            index = obj.following.indexOf(req.params.username);
+            if (index > -1) {
+            obj.following.splice(index, 1);
+            }
+        }
+    User.updateOne({username:req.user.username},obj,(err)=>{
+        if(err){
+            console.log(err);
+            req.flash('danger','There was some rror. Please try again.');
+            res.redirect('/user/'+req.params.username);
+            return;
+        }
+    });
+}
+    });
+}
+}
+});
+//
 
 app.post('/todo/:username',(req,res,next)=>{
 	if(req.user.username == req.params.username){
